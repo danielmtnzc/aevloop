@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidad | Vibes Code Studios</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* --- VARIABLES DE COLOR --- */
+        :root {
+            --primary: #6366f1; --bg: #0b0f1a; --card-bg: #161b2c;
+            --text: #f8fafc; --text-muted: #94a3b8; --border: rgba(255, 255, 255, 0.05);
+        }
+        [data-theme="light"] {
+            --bg: #f8f7f2; --card-bg: #ffffff;
+            --text: #1a1a1a; --text-muted: #64748b; --border: rgba(0, 0, 0, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.4s ease, color 0.4s ease; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            line-height: 1.8; 
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- BOTONES DE NAVEGACIÓN PROFESIONALES --- */
+        .nav-btn {
+            position: fixed; top: 25px; z-index: 1000;
+            background: var(--card-bg); border: 1px solid var(--border);
+            color: var(--text); width: 45px; height: 45px; border-radius: 12px; 
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-decoration: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .nav-btn i { width: 20px; height: 20px; stroke-width: 2px; }
+
+        .nav-btn:hover { 
+            transform: translateY(-2px); 
+            background: var(--primary); 
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .btn-left { left: 25px; } 
+        .btn-right { right: 25px; }
+
+        .content { 
+            max-width: 850px; width: 90%; margin: 100px auto 60px; 
+            background: var(--card-bg); padding: 50px; border-radius: 32px; 
+            border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(0,0,0,0.05); flex: 1;
+        }
+
+        h1 { color: var(--primary); font-size: 2.5rem; margin-bottom: 10px; line-height: 1.2; letter-spacing: -1px; }
+        .date { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        
+        h2 { color: var(--text); margin-top: 40px; font-size: 1.4rem; border-left: 4px solid var(--primary); padding-left: 15px; margin-bottom: 15px; }
+        
+        p, li { color: var(--text-muted); margin-bottom: 15px; font-size: 1.05rem; }
+        ul { margin-left: 20px; margin-bottom: 20px; }
+        strong { color: var(--text); font-weight: 600; }
+
+        footer { padding: 60px 20px; text-align: center; border-top: 1px solid var(--border); color: var(--text-muted); }
+        .footer-links { margin-top: 20px; display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; }
+        footer a { color: var(--text-muted); text-decoration: none; font-weight: 500; }
+        footer a:hover { color: var(--primary); }
+
+        @media (max-width: 768px) { 
+            .content { padding: 35px 25px; margin: 80px auto 30px; } 
+            h1 { font-size: 2rem; }
+            .nav-btn { top: 15px; width: 40px; height: 40px; }
+            .btn-left { left: 15px; }
+            .btn-right { right: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // Aplicar tema inmediatamente para evitar parpadeo blanco
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.body.setAttribute('data-theme', savedTheme);
+    </script>
+
+    <a href="/" class="nav-btn btn-left" title="Volver al inicio">
+        <i data-lucide="home"></i>
+    </a>
+
+    <button class="nav-btn btn-right" onclick="toggleTheme()" title="Cambiar tema">
+        <i id="theme-icon-container" data-lucide="moon"></i>
+    </button>
+
+    <div class="content">
+        <h1>Política de Privacidad</h1>
+        <p class="date">Última actualización: 14 de marzo de 2026</p>
+
+        <p>En <strong>Vibes Code Studios</strong>, accesible desde vibescodestudios.com, una de nuestras principales prioridades es la privacidad de nuestros visitantes y usuarios. Este documento contiene los tipos de información que recopilamos y cómo los utilizamos.</p>
+
+        <h2>1. Información que recopilamos</h2>
+        <p>Nuestras aplicaciones están diseñadas para funcionar con el mínimo de datos personales posible. Sin embargo, podemos recopilar:</p>
+        <ul>
+            <li><strong>Información del dispositivo:</strong> Modelo de hardware, versión del sistema operativo e identificadores únicos del dispositivo (IDFA/AAID).</li>
+            <li><strong>Datos de uso:</strong> Estadísticas anónimas sobre cómo interactúas con la app.</li>
+            <li><strong>Información de diagnóstico:</strong> Registros de errores (Crash logs) para solucionar fallos técnicos.</li>
+        </ul>
+
+        <h2>2. Uso de servicios de terceros</h2>
+        <p>Podemos emplear a terceras empresas para facilitar nuestras aplicaciones. Estos terceros tienen acceso a su información técnica solo para realizar tareas en nuestro nombre:</p>
+        <ul>
+            <li><strong>Google AdMob:</strong> Utilizado para mostrar anuncios.</li>
+            <li><strong>Firebase Analytics:</strong> Para entender el comportamiento del usuario de forma agregada.</li>
+        </ul>
+
+        <h2>3. Consentimiento y Menores</h2>
+        <p>Vibes Code Studios no recopila conscientemente información personal de menores de 13 años. Si cree que un menor proporcionó datos, contáctenos de inmediato.</p>
+
+        <h2>4. Sus Derechos (GDPR / CCPA)</h2>
+        <p>Usted tiene derecho a solicitar acceso, rectificación o eliminación de cualquier dato técnico recopilado enviando un correo a <strong style="word-break: break-all;">development@vibescodestudios.com</strong>.</p>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Vibes Code Studios</p>
+            <div class="footer-links">
+                <a href="/">Inicio</a>
+                <a href="/privacy">Privacidad</a>
+                <a href="/terms">Términos</a>
+                <a href="/delete-data">Eliminación de Datos</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Inicializar iconos
+        lucide.createIcons();
+
+        function applyTheme(theme) {
+            document.body.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            
+            const iconContainer = document.getElementById('theme-icon-container');
+            if(theme === 'dark') {
+                iconContainer.setAttribute('data-lucide', 'moon');
+            } else {
+                iconContainer.setAttribute('data-lucide', 'sun');
+            }
+            lucide.createIcons();
+        }
+
+        function toggleTheme() {
+            const current = document.body.getAttribute('data-theme');
+            applyTheme(current === 'dark' ? 'light' : 'dark');
+        }
+
+        // Carga inicial
+        document.addEventListener('DOMContentLoaded', () => {
+            const current = localStorage.getItem('theme') || 'dark';
+            applyTheme(current);
+        });
+    </script>
+</body>
+</html>
