@@ -277,7 +277,7 @@ footer .name { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.08em; tex
 
 /* ---------- Adaptación a pantallas ---------- */
 @media (max-width: 900px) {
-    .hero { grid-template-columns: 1fr; padding: 8vh 24px 380px; min-height: 0; }
+    .hero { grid-template-columns: 1fr; padding: 8vh 24px 2vh; min-height: 0; }
     .hero-visual { display: none; }
     .bento { grid-template-columns: 1fr; } .bento-wide { grid-column: auto; }
     .about { grid-template-columns: 1fr; gap: 24px; }
@@ -291,8 +291,8 @@ footer .name { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.08em; tex
     .nav-links a:not(.keep) { display: none; }
     .card { padding: 30px 24px; }
     .content { padding: 34px 22px; margin-top: 24px; width: calc(100% - 32px); }
-    .hero { padding: 7vh 16px 340px; }
-    .hero-404 { padding-bottom: 300px; }
+    .hero { padding: 6vh 16px 0; }
+    .hero-404 { padding-bottom: 6vh; }
     .hero-actions { gap: 8px; }
     .hero-actions .btn-primary { width: 100%; }
     .section { padding-top: 88px; }

@@ -215,11 +215,11 @@
 
         // Estaciones: dónde se coloca cada forma. Solo en pantallas anchas (hay hueco a la derecha del contenido).
         var DEFS = [
-            { sel: '#apps', shape: shapeTile, s: 95, base: -0.3 },
-            { sel: '#metodo .section-head', shape: shapeGear, s: 82, base: -0.25, gear: true },
-            { sel: '#stack', shape: shapeAtom, s: 105, base: -0.2, atom: true },
-            { sel: '#faq', shape: shapeQuestion, s: 120, base: -0.3 },
-            { sel: '.cta-box', shape: shapeEnvelope, s: 82, base: -0.3, inset: 230 }
+            { sel: '#apps', nsel: '#apps .section-head', shape: shapeTile, s: 95, base: -0.3 },
+            { sel: '#metodo .section-head', nsel: '#metodo .section-head', shape: shapeGear, s: 82, base: -0.25, gear: true },
+            { sel: '#stack', nsel: '#stack .section-head', shape: shapeAtom, s: 105, base: -0.2, atom: true },
+            { sel: '#faq', nsel: '#faq .section-head', shape: shapeQuestion, s: 120, base: -0.3 },
+            { sel: '.cta-box', nsel: '.cta-box', shape: shapeEnvelope, s: 82, base: -0.3, inset: 230 }
         ];
         var stations = [], built = false;
         function buildShapes() { // las formas se generan solo la primera vez que hacen falta
@@ -232,26 +232,38 @@
             stations = [];
             if (!hero) return;
             var vr = visual && visual.getBoundingClientRect(), hr = hero.getBoundingClientRect();
-            var st = { pts: phoneShape, base: -0.42, phone: true, h: Math.max(hr.height, 300) };
+            var st = { pts: phoneShape, base: -0.42, phone: true, h: Math.max(hr.height, 300), dim: 1 };
             if (vr && vr.width > 40) { // escritorio: a la derecha del titular
                 st.x = vr.left + vr.width / 2; st.y = vr.top + sy + vr.height / 2;
                 st.s = Math.min(vr.height * 0.74 / PH, vr.width * 0.62, 300);
-            } else { // móvil: debajo del texto
-                var pad = parseFloat(getComputedStyle(hero).paddingBottom) || 300;
-                st.s = Math.min(pad * 0.8 / PH, W * 0.42); st.x = W / 2; st.y = hr.bottom + sy - pad / 2;
+            } else { // móvil: detrás del titular, a la derecha y más tenue, para que se vea nada más entrar
+                var h1 = hero.querySelector('h1'), r1 = (h1 || hero).getBoundingClientRect();
+                st.s = Math.min(W * 0.36, 150);
+                st.x = W - st.s * 0.62 - 8; st.y = r1.top + sy + r1.height * 0.6; st.dim = 0.5;
             }
+            st.ty = Math.max(st.y, H * 0.5 + 40); // el teléfono se mantiene formado hasta que empiezas a bajar
             stations.push(st);
             var cont = document.querySelector('main .container');
-            if (W < 1200 || !cont) return;
+            if (!cont) return;
             buildShapes();
-            var right = cont.getBoundingClientRect().right - 24;
+            var wide = W >= 1200, right = cont.getBoundingClientRect().right - (wide ? 24 : 16);
+            var ns = clamp(W * 0.14, 50, 92); // tamaño de las figuras en pantallas estrechas
             DEFS.forEach(function (d) {
-                var el = document.querySelector(d.sel); if (!el || !d.pts) return;
-                var r = el.getBoundingClientRect();
-                stations.push({ pts: d.pts, base: d.base, gear: d.gear, atom: d.atom, s: d.s,
-                    x: d.inset ? r.right - d.inset : right - d.s * 1.55, y: r.top + sy + r.height / 2 });
+                if (!d.pts) return;
+                if (wide) { // a la derecha del contenido de la sección
+                    var el = document.querySelector(d.sel); if (!el) return;
+                    var r = el.getBoundingClientRect();
+                    stations.push({ pts: d.pts, base: d.base, gear: d.gear, atom: d.atom, s: d.s, dim: 1,
+                        x: d.inset ? r.right - d.inset : right - d.s * 1.55, y: r.top + sy + r.height / 2 });
+                } else { // pantallas estrechas: pequeña, junto al título de la sección
+                    var hd = document.querySelector(d.nsel); if (!hd) return;
+                    var rh = hd.getBoundingClientRect(), edge = d.inset ? rh.right - 12 : right;
+                    stations.push({ pts: d.pts, base: d.base, gear: d.gear, atom: d.atom, s: ns, dim: 0.6,
+                        x: edge - ns * 1.25, y: rh.top + sy + (d.inset ? ns * 1.6 : Math.min(rh.height / 2, ns * 1.3)) });
+                }
             });
-            stations.sort(function (a, b) { return a.y - b.y; });
+            stations.forEach(function (o) { if (o.ty == null) o.ty = o.y; });
+            stations.sort(function (a, b) { return a.ty - b.ty; });
         }
 
         var DUST = small ? 26 : 60, dust = [], COLORS = [VIOLET, VIOLET, LAVENDER, AMBER, TEAL, MAGENTA, BLUE];
@@ -294,9 +306,9 @@
             var A = stations[0], B = stations[0], m = 0, spread = 0;
             if (stations.length > 1) {
                 var yc = scrollY + H * 0.5, i = 0;
-                while (i < stations.length - 1 && yc >= stations[i + 1].y) i++;
+                while (i < stations.length - 1 && yc >= stations[i + 1].ty) i++;
                 A = stations[i]; B = stations[Math.min(i + 1, stations.length - 1)];
-                if (A !== B) m = smooth(0.25, 0.75, (yc - A.y) / (B.y - A.y));
+                if (A !== B) m = smooth(0.25, 0.75, (yc - A.ty) / Math.max(1, B.ty - A.ty));
                 if (reduce) m = m < 0.5 ? 0 : 1;                                   // sin animación: cambia de figura de golpe, sin viajar
                 if (m > 0.999) { A = B; m = 0; }
             } else {
@@ -307,7 +319,8 @@
             if (cy + S * 2.5 < 0 || cy - S * 2.5 > H) return;
             cy += reduce ? 0 : Math.sin(t * 0.0011) * S * 0.04;
             var wPhone = (A.phone ? 1 - m : 0) + (B.phone && A !== B ? m : 0);
-            var scatter = Math.sin(Math.PI * m);                                          // se dispersa a mitad del cambio
+            var scatter = Math.sin(Math.PI * m);
+            var dimF = (A.dim || 1) + ((B.dim || 1) - (A.dim || 1)) * m;               // más tenue en pantallas estrechas                                          // se dispersa a mitad del cambio
 
             var rotY = A.base + (B.base - A.base) * m + (reduce ? 0 : Math.sin(t * 0.0004) * 0.38) + tx * 0.7;
             var cyc = (el % 13000) / 13000;
@@ -356,7 +369,7 @@
                     var grp = Math.floor(g), ph = g - grp, e = (ph - t * 0.00022 - grp * 0.33) % 1; if (e < 0) e += 1;
                     if (e < 0.05) { alpha += 0.6 * (1 - e / 0.05) * (1 - scatter); size *= 1.6; }
                 }
-                alpha = clamp(alpha, 0, 1);
+                alpha = clamp(alpha * dimF, 0, 1);
                 ctx.strokeStyle = 'rgba(' + p.c + ',' + alpha.toFixed(3) + ')';
                 ctx.beginPath(); tri(sx, sy, size, p.a + p.spin * t); ctx.stroke();
             }
@@ -382,6 +395,9 @@
                 mx = e.clientX / W - 0.5; my = e.clientY / H - 0.5; px = e.clientX; py = e.clientY;
             }, { passive: true });
             document.addEventListener('pointerleave', function () { px = py = -9999; });
+            ['pointerup', 'pointercancel'].forEach(function (ev) { // en táctil, al levantar el dedo
+                window.addEventListener(ev, function (e) { if (e.pointerType !== 'mouse') px = py = -9999; }, { passive: true });
+            });
             requestAnimationFrame(loop);
         }
     }
