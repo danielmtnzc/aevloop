@@ -494,7 +494,7 @@
             var tipo = form.querySelector('input[name="tipo"]:checked').value, app = f.app.value, disp = f.dispositivo.value.trim();
             var subject = '[' + app + '] ' + tipo;
             var body = 'Tipo: ' + tipo + '\nApp: ' + app + (disp ? '\nDispositivo: ' + disp : '') + '\n\n' + msg + '\n';
-            window.location.href = 'mailto:development@vibescodestudios.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+            window.location.href = 'mailto:aevloop.dev@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
         });
     }
 
