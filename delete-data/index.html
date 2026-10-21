@@ -3,191 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eliminación de Datos | Vibes Code Studios</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        /* --- VARIABLES DE COLOR --- */
-        :root {
-            --primary: #6366f1; --bg: #0b0f1a; --card-bg: #161b2c;
-            --text: #f8fafc; --text-muted: #94a3b8; --border: rgba(255, 255, 255, 0.05);
-        }
-        [data-theme="light"] {
-            --bg: #f8f7f2; --card-bg: #ffffff;
-            --text: #1a1a1a; --text-muted: #64748b; --border: rgba(0, 0, 0, 0.08);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.4s ease, color 0.4s ease; }
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
-            line-height: 1.8; 
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* --- BOTONES DE NAVEGACIÓN PROFESIONALES --- */
-        .nav-btn {
-            position: fixed; top: 25px; z-index: 1000;
-            background: var(--card-bg); border: 1px solid var(--border);
-            color: var(--text); width: 45px; height: 45px; border-radius: 12px; 
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            text-decoration: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .nav-btn i { width: 20px; height: 20px; stroke-width: 2px; }
-
-        .nav-btn:hover { 
-            transform: translateY(-2px); 
-            background: var(--primary); 
-            color: white;
-            border-color: var(--primary);
-        }
-        
-        .btn-left { left: 25px; } 
-        .btn-right { right: 25px; }
-
-        .content { 
-            max-width: 850px; width: 90%; margin: 100px auto 60px; 
-            background: var(--card-bg); padding: 50px; border-radius: 32px; 
-            border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(0,0,0,0.05); flex: 1;
-        }
-
-        h1 { color: var(--primary); font-size: 2.5rem; margin-bottom: 20px; line-height: 1.2; letter-spacing: -1px; }
-        
-        h2 { color: var(--text); margin-top: 40px; font-size: 1.4rem; border-left: 4px solid var(--primary); padding-left: 15px; margin-bottom: 15px; }
-        
-        p, li { color: var(--text-muted); margin-bottom: 15px; font-size: 1.05rem; }
-        ul { margin-left: 20px; margin-bottom: 20px; }
-        strong { color: var(--text); font-weight: 600; }
-
-        .card-info { 
-            background: rgba(99, 102, 241, 0.1); 
-            border-left: 4px solid var(--primary); 
-            padding: 20px; 
-            margin: 25px 0; 
-            border-radius: 0 12px 12px 0; 
-            color: var(--text);
-        }
-
-        .btn-contact { 
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: var(--primary); 
-            color: white !important; 
-            padding: 15px 30px; 
-            text-decoration: none; 
-            border-radius: 12px; 
-            font-weight: bold; 
-            margin-top: 20px;
-            transition: all 0.3s;
-            text-align: center;
-        }
-        .btn-contact i { width: 18px; height: 18px; }
-        .btn-contact:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2); }
-
-        footer { padding: 60px 20px; text-align: center; border-top: 1px solid var(--border); color: var(--text-muted); }
-        .footer-links { margin-top: 20px; display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; }
-        footer a { color: var(--text-muted); text-decoration: none; font-weight: 500; }
-        footer a:hover { color: var(--primary); }
-
-        @media (max-width: 768px) { 
-            .content { padding: 35px 25px; margin: 80px auto 30px; } 
-            h1 { font-size: 2rem; }
-            .nav-btn { top: 15px; width: 40px; height: 40px; }
-            .btn-left { left: 15px; }
-            .btn-right { right: 15px; }
-            .btn-contact { display: flex; justify-content: center; width: 100%; }
-        }
-    </style>
+    <title>Eliminación de Datos | Aevloop</title>
+    <meta name="description" content="Cómo solicitar la eliminación de tus datos en las aplicaciones de Aevloop.">
+    <link rel="canonical" href="https://vibescodestudios.com/delete-data/">
+    <meta name="theme-color" content="#07080c">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/assets/logo/icono.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <script>
+        document.documentElement.classList.add('js');
+        try { document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark'); }
+        catch (e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+    </script>
+    <link rel="preload" href="/assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link href="/assets/site.css" rel="stylesheet">
+    <script defer src="/assets/site.js"></script>
 </head>
 <body>
-    <script>
-        // Aplicar tema inmediatamente
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        document.body.setAttribute('data-theme', savedTheme);
-    </script>
-
-    <a href="/" class="nav-btn btn-left" title="Volver al inicio">
-        <i data-lucide="home"></i>
-    </a>
-
-    <button class="nav-btn btn-right" onclick="toggleTheme()" title="Cambiar tema">
-        <i id="theme-icon-container" data-lucide="moon"></i>
-    </button>
-
-    <div class="content">
-        <h1>Solicitud de Eliminación de Datos</h1>
-        
-        <p>En <strong>Vibes Code Studios</strong>, estamos comprometidos con la transparencia y el control de tus datos personales, de acuerdo con las normativas GDPR y las políticas de Google Play y App Store.</p>
-
-        <div class="card-info">
-            <strong>Estado actual:</strong> Actualmente, nuestras aplicaciones no requieren la creación de cuentas de usuario ni almacenan datos personales identificables en nuestros servidores.
+    <a class="skip-link" href="#main">Saltar al contenido</a>
+    <header class="site-nav">
+        <div class="nav-inner">
+            <a href="/" class="brand"><img src="/assets/logo/icono.png" alt="" width="30" height="30">Aevloop</a>
+            <nav class="nav-links" aria-label="Principal">
+                <a href="/" class="keep">Inicio</a>
+                <a href="mailto:development@vibescodestudios.com">Contacto</a>
+            </nav>
+            <button class="theme-toggle" type="button" aria-label="Cambiar tema" title="Cambiar tema">
+                <i data-icon="moon" class="i-moon"></i><i data-icon="sun" class="i-sun"></i>
+            </button>
         </div>
+    </header>
 
-        <h2>Cómo solicitar la eliminación</h2>
-        <p>Si en el futuro alguna de nuestras aplicaciones permite la creación de perfiles y deseas eliminar tu información, o si crees que hemos recopilado datos técnicos que deseas borrar, sigue estos pasos:</p>
-        
-        <ul>
-            <li>Envía un correo electrónico a: <strong>development@vibescodestudios.com</strong></li>
-            <li>Usa el asunto: <strong>"Solicitud de eliminación de datos - [Nombre de la App]"</strong></li>
-            <li>Indica tu ID de usuario o identificador de dispositivo si es aplicable.</li>
-        </ul>
+    <main id="main">
+        <div class="content">
+            <h1>Solicitud de Eliminación de Datos</h1>
 
-        <p>Nuestro equipo procesará la solicitud y eliminará cualquier dato asociado en un plazo máximo de 7 días hábiles, confirmando la acción por correo electrónico.</p>
+            <p>En <strong>Aevloop</strong>, estamos comprometidos con la transparencia y el control de tus datos personales, de acuerdo con las normativas GDPR y las políticas de Google Play y App Store.</p>
 
-        <a href="mailto:development@vibescodestudios.com" class="btn-contact">
-            <i data-lucide="trash-2"></i>
-            Contactar para eliminar datos
-        </a>
-    </div>
+            <div class="card-info">
+                <strong>Estado actual:</strong> Actualmente, nuestras aplicaciones no requieren la creación de cuentas de usuario ni almacenan datos personales identificables en nuestros servidores.
+            </div>
+
+            <h2>Cómo solicitar la eliminación</h2>
+            <p>Si en el futuro alguna de nuestras aplicaciones permite la creación de perfiles y deseas eliminar tu información, o si crees que hemos recopilado datos técnicos que deseas borrar, sigue estos pasos:</p>
+
+            <ul>
+                <li>Envía un correo electrónico a: <strong>development@vibescodestudios.com</strong></li>
+                <li>Usa el asunto: <strong>"Solicitud de eliminación de datos - [Nombre de la App]"</strong></li>
+                <li>Indica tu ID de usuario o identificador de dispositivo si es aplicable.</li>
+            </ul>
+
+            <p>Nuestro equipo procesará la solicitud y eliminará cualquier dato asociado en un plazo máximo de 7 días hábiles, confirmando la acción por correo electrónico.</p>
+
+            <a href="mailto:development@vibescodestudios.com" class="btn btn-primary" style="margin-top: 20px;">
+                <i data-icon="trash-2"></i>
+                Contactar para eliminar datos
+            </a>
+        </div>
+    </main>
 
     <footer>
-        <div class="container">
-            <p>&copy; 2026 Vibes Code Studios</p>
-            <div class="footer-links">
-                <a href="/">Inicio</a>
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a href="/" class="brand"><img src="/assets/logo/icono.png" alt="" width="30" height="30">Aevloop</a>
+                <p>Aplicaciones móviles para iOS y Android.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
                 <a href="/privacy">Privacidad</a>
                 <a href="/terms">Términos</a>
-                <a href="/delete-data">Eliminación de Datos</a>
+                <a href="/delete-data">Eliminación de datos</a>
+            </div>
+            <div class="footer-col">
+                <h4>Contacto</h4>
+                <a href="mailto:development@vibescodestudios.com">development@vibescodestudios.com</a>
             </div>
         </div>
+        <div class="container footer-bottom"><p class="name">&copy; 2026 Aevloop</p></div>
     </footer>
-
-    <script>
-        // Inicializar iconos
-        lucide.createIcons();
-
-        function applyTheme(theme) {
-            document.body.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            
-            const iconContainer = document.getElementById('theme-icon-container');
-            if(theme === 'dark') {
-                iconContainer.setAttribute('data-lucide', 'moon');
-            } else {
-                iconContainer.setAttribute('data-lucide', 'sun');
-            }
-            lucide.createIcons();
-        }
-
-        function toggleTheme() {
-            const current = document.body.getAttribute('data-theme');
-            applyTheme(current === 'dark' ? 'light' : 'dark');
-        }
-
-        // Carga inicial
-        document.addEventListener('DOMContentLoaded', () => {
-            const current = localStorage.getItem('theme') || 'dark';
-            applyTheme(current);
-        });
-    </script>
 </body>
 </html>

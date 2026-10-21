@@ -3,389 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vibes Code Studios</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        :root {
-            --primary: #6366f1; --bg: #0b0f1a; --card-bg: #161b2c; --tech-card: #1e2538;
-            --text: #ffffff; --text-muted: #94a3b8; --icon-filter: brightness(0) invert(1);
-            --border: rgba(255, 255, 255, 0.05);
-            --modal-overlay: rgba(11, 15, 26, 0.8);
-        }
-        [data-theme="light"] {
-            --bg: #f8f7f2; --card-bg: #ffffff; --tech-card: #ffffff;
-            --text: #1a1a1a; --text-muted: #64748b; --icon-filter: none;
-            --border: rgba(0, 0, 0, 0.05);
-            --modal-overlay: rgba(248, 247, 242, 0.8);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; transition: background-color 0.4s ease, color 0.4s ease; }
-        
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); overflow-x: hidden; }
-        
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-        
-        /* Botón de Tema Profesional */
-        .theme-toggle { 
-            position: fixed; top: 30px; right: 30px; z-index: 1000; 
-            background: var(--card-bg); border: 1px solid var(--border); 
-            color: var(--text); width: 48px; height: 48px; border-radius: 12px; 
-            cursor: pointer; display: flex; align-items: center; justify-content: center; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-        }
-        .theme-toggle i { width: 20px; height: 20px; stroke-width: 2px; }
-        .theme-toggle:hover { transform: translateY(-2px); background: var(--primary); color: white; border-color: var(--primary); }
-
-        /* Hero Section */
-        .hero { height: 85vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: radial-gradient(circle at center, rgba(99, 102, 241, 0.08) 0%, transparent 70%); }
-        .hero img { width: 100%; max-width: 250px; height: auto; margin-bottom: 30px; }
-        .hero h1 { font-size: 3.8rem; letter-spacing: -2px; line-height: 1.1; margin-bottom: 15px; }
-        .hero p { color: var(--text-muted); font-size: 1.25rem; font-weight: 300; }
-
-        /* Secciones Generales */
-        .section { padding: 80px 0; }
-        .grid-main { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-bottom: 40px; }
-        .card-main { background: var(--card-bg); padding: 50px; border-radius: 32px; border: 1px solid var(--border); box-shadow: 0 15px 35px rgba(0,0,0,0.03); transition: transform 0.3s; }
-        .card-main:hover { transform: translateY(-5px); }
-        .card-main h2 { color: var(--primary); margin-bottom: 20px; font-size: 1.8rem; }
-        /* MODIFICADO: Justificar texto de los párrafos en las tarjetas principales */
-        .card-main p { text-align: justify; line-height: 1.6; }
-
-        /* --- SECCIÓN: MOSAICO DE ICONOS COMPACTO --- */
-        .apps-mosaic-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 40px;
-            justify-items: center;
-            align-items: center;
-            padding: 40px 0 80px 0;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .mosaic-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            text-align: center;
-            width: 110px;
-        }
-
-        .mosaic-icon {
-            width: 100px;
-            height: 100px;
-            border-radius: 24px;
-            object-fit: cover;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
-        }
-
-        /* Efecto hover premium para los iconos */
-        .mosaic-item:hover .mosaic-icon {
-            transform: translateY(-8px) scale(1.04);
-            box-shadow: 0 15px 35px rgba(99, 102, 241, 0.25);
-            border-color: var(--primary);
-        }
-
-        .mosaic-name {
-            margin-top: 12px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--text);
-            opacity: 0.85;
-            transition: color 0.2s, opacity 0.2s;
-            white-space: normal; 
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
-        }
-
-        .mosaic-item:hover .mosaic-name {
-            color: var(--primary);
-            opacity: 1;
-        }
-
-        /* --- VENTANA MODAL COMPLETA DINÁMICA --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--modal-overlay); backdrop-filter: blur(12px);
-            z-index: 2000; display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-        }
-        .modal-overlay.active { opacity: 1; pointer-events: all; }
-        
-        .modal-content {
-            background: var(--card-bg); border: 1px solid var(--border);
-            padding: 45px 40px; border-radius: 36px; max-width: 450px; width: 90%;
-            position: relative; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.4);
-            transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .modal-overlay.active .modal-content { transform: scale(1); }
-        
-        .modal-close { position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; }
-        .modal-close:hover { color: var(--primary); }
-        
-        .modal-icon { width: 95px; height: 95px; border-radius: 22px; object-fit: cover; box-shadow: 0 12px 30px rgba(0,0,0,0.25); margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.05); }
-        .modal-content h2 { font-size: 1.9rem; margin-bottom: 15px; font-weight: 700; letter-spacing: -0.5px; }
-        
-        /* MODIFICADO: Justificar el texto de la descripción larga del modal */
-        .modal-desc { color: var(--text-muted); font-size: 0.98rem; line-height: 1.6; margin-bottom: 30px; text-align: justify; }
-        
-        .modal-badges { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-        .modal-badge-link { height: 42px; transition: transform 0.2s; }
-        .modal-badge-link:hover { transform: scale(1.05); }
-        .modal-badge-link img { height: 100%; width: auto; }
-
-        /* --- SECCIÓN FAQ --- */
-        .faq-section { margin-bottom: 120px; }
-        .faq-container { max-width: 800px; margin: 0 auto; }
-        .faq-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 15px; overflow: hidden; transition: all 0.3s ease; }
-        .faq-question { padding: 22px 25px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 1.1rem; }
-        
-        /* MODIFICADO: Justificar el texto de las respuestas a las preguntas frecuentes */
-        .faq-answer { padding: 0 25px; max-height: 0; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: var(--text-muted); line-height: 1.6; text-align: justify; }
-        .faq-item.active { border-color: var(--primary); }
-        .faq-item.active .faq-answer { padding: 0 25px 22px; max-height: 300px; }
-        .faq-item i { width: 18px; height: 18px; transition: transform 0.3s; }
-        .faq-item.active i { transform: rotate(180deg); color: var(--primary); }
-
-        /* --- SECCIÓN HERRAMIENTAS --- */
-        .tech-section { margin-top: 50px; text-align: center; }
-        .tech-header { margin-bottom: 40px; }
-        .tech-title { font-size: 2.8rem; letter-spacing: -1px; margin-bottom: 10px; }
-        .tech-label { color: #d97706; text-transform: uppercase; font-weight: 700; font-size: 0.8rem; letter-spacing: 3px; display: block; margin-bottom: 15px; }
-
-        .tech-slider {
-            width: 100%; overflow: hidden; padding: 50px 0; position: relative;
-            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-            -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-        }
-
-        .tech-track { display: flex; width: calc(250px * 12); animation: scroll 35s linear infinite; }
-        .tech-track:hover { animation-play-state: paused; }
-
-        @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(calc(-250px * 6)); }
-        }
-
-        .tech-item { width: 250px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 20px; filter: grayscale(100%); opacity: 0.4; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-        .tech-item:hover { filter: grayscale(0%); opacity: 1; transform: scale(1.15); }
-        .tech-item img { width: 65px; height: 65px; object-fit: contain; }
-        .tech-item span { font-size: 0.85rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); }
-        
-        .tech-item img[src$=".webp"], .tech-item img[src$=".png"] { filter: none !important; }
-        [data-theme="dark"] .tech-item img[alt="iOS"] { filter: brightness(0) invert(1) !important; }
-        .white-icon { filter: var(--icon-filter); }
-
-        /* Footer */
-        footer { padding: 100px 0 50px; text-align: center; border-top: 1px solid var(--border); }
-        .footer-links { margin-top: 30px; display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; }
-        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: 0.3s; }
-        .footer-links a:hover { color: var(--primary); }
-
-        @media (max-width: 768px) { 
-            .hero h1 { font-size: 2.8rem; } 
-            .tech-track { animation-duration: 25s; }
-            .tech-item { width: 180px; }
-            .theme-toggle { top: 20px; right: 20px; }
-            .tech-title { font-size: 2.2rem; }
-            .apps-mosaic-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        }
-        @media (max-width: 480px) {
-            .apps-mosaic-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-    </style>
+    <title>Aevloop | Aplicaciones móviles</title>
+    <meta name="description" content="Aevloop desarrolla aplicaciones móviles para iOS y Android con rendimiento nativo y privacidad por defecto. Descubre Pueblo Duerme - Narrador Pro.">
+    <link rel="canonical" href="https://vibescodestudios.com/">
+    <meta name="theme-color" content="#07080c">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Aevloop">
+    <meta property="og:title" content="Aevloop | Aplicaciones móviles">
+    <meta property="og:description" content="Aplicaciones móviles para iOS y Android con rendimiento nativo y privacidad por defecto.">
+    <meta property="og:url" content="https://vibescodestudios.com/">
+    <meta property="og:image" content="https://vibescodestudios.com/assets/logo/og.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://vibescodestudios.com/assets/logo/og.png">
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" href="assets/logo/icono.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="assets/logo/apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+    <script>
+        document.documentElement.classList.add('js');
+        try { document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark'); }
+        catch (e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+    </script>
+    <link rel="preload" href="assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link href="assets/site.css" rel="stylesheet">
+    <script defer src="assets/site.js"></script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "Organization",
+                "name": "Aevloop",
+                "url": "https://vibescodestudios.com/",
+                "logo": "https://vibescodestudios.com/assets/logo/icono.png",
+                "email": "development@vibescodestudios.com"
+            },
+            {
+                "@type": "MobileApplication",
+                "name": "Pueblo Duerme - Narrador Pro",
+                "operatingSystem": "Android, iOS",
+                "applicationCategory": "GameApplication",
+                "author": { "@type": "Organization", "name": "Aevloop" }
+            }
+        ]
+    }
+    </script>
 </head>
 <body>
-    <script>
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        document.body.setAttribute('data-theme', savedTheme);
-    </script>
+    <a class="skip-link" href="#main">Saltar al contenido</a>
+    <header class="site-nav">
+        <div class="nav-inner">
+            <a href="#" class="brand"><img src="assets/logo/icono.png" alt="" width="30" height="30">Aevloop</a>
+            <nav class="nav-links" aria-label="Principal">
+                <a href="#apps">Apps</a>
+                <a href="#metodo">Método</a>
+                <a href="#faq">FAQ</a>
+                <a href="#contacto" class="keep">Contacto</a>
+            </nav>
+            <button class="theme-toggle" type="button" aria-label="Cambiar tema" title="Cambiar tema">
+                <i data-icon="moon" class="i-moon"></i><i data-icon="sun" class="i-sun"></i>
+            </button>
+        </div>
+    </header>
 
-    <button class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema">
-        <i id="theme-icon-container" data-lucide="moon"></i>
-    </button>
-
-    <section class="hero" data-aos="fade-up">
-        <img src="assets/logo/icono.png" alt="Logo">
-        <h1>Vibes Code Studios</h1>
-        <p>Elevando el estándar del desarrollo móvil.</p>
-    </section>
-
-    <div class="container">
-        <section class="section" data-aos="fade-up">
-            <div class="grid-main">
-                <div class="card-main">
-                    <h2>Ingeniería Móvil</h2>
-                    <p>Diseñamos software robusto combinando rendimiento nativo, animaciones fluidas y arquitecturas escalables preparadas para el futuro global.</p>
-                </div>
-                <div class="card-main" onclick="window.location.href='mailto:development@vibescodestudios.com'" style="cursor: pointer;">
-                    <h2>Soporte Directo</h2>
-                    <p>¿Tienes algún problema o sugerencia? Escríbenos y te responderemos en menos de 24 horas.</p>
-                    <span style="color: var(--primary); font-weight: bold; font-size: 0.9rem; margin-top: 15px; display: inline-block;">Contactar ahora →</span>
-                </div>
+    <main id="main">
+        <section class="hero">
+            <span class="badge">Estudio de apps móviles</span>
+            <h1>Elevando el estándar del <span class="hl">desarrollo móvil.</span></h1>
+            <p>Diseñamos y publicamos aplicaciones para iOS y Android con rendimiento nativo y privacidad por defecto.</p>
+            <div class="hero-actions">
+                <a href="#apps" class="btn btn-primary">Ver nuestras apps</a>
+                <a href="#contacto" class="btn">Contactar</a>
             </div>
-
-            <div style="text-align: center; margin-top: 60px; margin-bottom: 10px;">
-                <span class="tech-label">Producción</span>
-                <h2 class="tech-title">Nuestras Aplicaciones</h2>
-            </div>
-
-            <div class="apps-mosaic-grid" data-aos="fade-up">
-                
-                <div class="mosaic-item" onclick="openAppModal('Pueblo Duerme', 'assets/apps/wolvesville.png', 'El sol se pone y el pueblo cierra los ojos... ¿quién sobrevivirá a la noche? Pueblo Duerme - Narrador Pro es la aplicación esencial para dirigir tus partidas de roles ocultos. Olvídate de los errores y las confusiones: gestiona los jugadores, asigna roles en secreto y narra la historia con fluidez para que la intriga nunca decaiga.', 'https://play.google.com/store/apps/details?id=com.narradorpro.pueblo_duerme', 'https://apps.apple.com/us/app/pueblo-duerme/id6760626709')">
-                    <img src="assets/apps/wolvesville.png" alt="Pueblo Duerme" class="mosaic-icon">
-                    <div class="mosaic-name">Pueblo Duerme</div>
-                </div>
-
-            </div>
-            <div class="faq-section" data-aos="fade-up">
-                <div style="text-align: center; margin-bottom: 40px;">
-                    <span class="tech-label">Ayuda</span>
-                    <h2 class="tech-title">Preguntas Frecuentes</h2>
-                </div>
-
-                <div class="faq-container">
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            ¿Mis datos están seguros en sus aplicaciones?
-                            <i data-lucide="chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Absolutamente. Diseñamos nuestras apps bajo la premisa de \"privacidad por defecto\". No recolectamos datos personales identificables y cumplimos estrictamente con las normativas GDPR.
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            ¿En qué plataformas están disponibles las apps?
-                            <i data-lucide="chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Nuestros desarrollos principales se centran en iOS (App Store) y Android (Google Play), utilizando tecnologías de alto rendimiento como Flutter para una experiencia nativa fluida.
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            ¿Ofrecen soporte si encuentro un error?
-                            <i data-lucide="chevron-down"></i>
-                        </div>
-                        <div class="faq-answer">
-                            Sí, monitorizamos activamente nuestras herramientas. Puedes reportar cualquier fallo a nuestro correo de soporte y trabajaremos en una actualización lo antes posible para solventarlo.
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tech-section" data-aos="fade-up">
-                <div class="tech-header">
-                    <span class="tech-label">Stack Tecnológico</span>
-                    <h2 class="tech-title">Herramientas</h2>
-                </div>
-                
-                <div class="tech-slider">
-                    <div class="tech-track">
-                        <div class="tech-item"><img src="assets/icons/flutter.svg" alt="Flutter"><span>Flutter</span></div>
-                        <div class="tech-item"><img src="assets/icons/dart.png" alt="Dart"><span>Dart</span></div>
-                        <div class="tech-item"><img src="assets/icons/firebase.svg" alt="Firebase"><span>Firebase</span></div>
-                        <div class="tech-item"><img src="assets/icons/github.svg" alt="GitHub" class="white-icon"><span>GitHub</span></div>
-                        <div class="tech-item"><img src="assets/icons/android.png" alt="Android"><span>Android</span></div>
-                        <div class="tech-item"><img src="assets/icons/apple.webp" alt="iOS"><span>iOS</span></div>
-                        
-                        <div class="tech-item"><img src="assets/icons/flutter.svg" alt="Flutter"><span>Flutter</span></div>
-                        <div class="tech-item"><img src="assets/icons/dart.png" alt="Dart"><span>Dart</span></div>
-                        <div class="tech-item"><img src="assets/icons/firebase.svg" alt="Firebase"><span>Firebase</span></div>
-                        <div class="tech-item"><img src="assets/icons/github.svg" alt="GitHub" class="white-icon"><span>GitHub</span></div>
-                        <div class="tech-item"><img src="assets/icons/android.png" alt="Android"><span>Android</span></div>
-                        <div class="tech-item"><img src="assets/icons/apple.webp" alt="iOS"><span>iOS</span></div>
-                    </div>
-                </div>
-            </div>
+            <div class="hero-trust">Disponible en App Store y Google Play</div>
+            <a class="scroll-cue" href="#apps" aria-label="Ir a las aplicaciones"><i data-icon="chevron-down"></i></a>
         </section>
-    </div>
 
-    <div class="modal-overlay" id="appModal" onclick="closeAppModal(event)">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <button class="modal-close" onclick="closeAppModal(null)"><i data-lucide="x"></i></button>
-            <img src="" alt="App Icon" id="modalIcon" class="modal-icon">
-            <h2 id="modalTitle">Nombre App</h2>
-            <p id="modalDesc" class="modal-desc">Descripción...</p>
+        <div class="container">
+            <section class="section reveal" id="apps">
+                <div class="section-head">
+                    <span class="eyebrow">Producción</span>
+                    <h2 class="section-title">Nuestras Aplicaciones</h2>
+                </div>
+                <div class="apps-grid">
+                    <button type="button" class="app-card spot" data-app="pueblo-duerme">
+                        <img src="assets/apps/wolvesville.png" alt="" class="app-card-icon" width="64" height="64" loading="lazy">
+                        <span class="app-card-body">
+                            <strong>Pueblo Duerme</strong>
+                            <span>Narrador Pro para partidas de roles ocultos</span>
+                        </span>
+                        <span class="app-card-go" aria-hidden="true">→</span>
+                    </button>
+                </div>
+            </section>
+
+            <section class="section reveal" id="servicios">
+                <div class="bento">
+                    <div class="card spot bento-wide">
+                        <div class="card-icon"><i data-icon="smartphone"></i></div>
+                        <h2>Ingeniería Móvil</h2>
+                        <p>Aplicaciones con rendimiento nativo, animaciones fluidas y una arquitectura pensada para crecer sin tener que reescribirlo todo.</p>
+                        <div class="chips"><span>Flutter</span><span>Dart</span><span>Firebase</span></div>
+                    </div>
+                    <div class="card spot">
+                        <div class="card-icon"><i data-icon="layers"></i></div>
+                        <h2>iOS y Android</h2>
+                        <p>Una misma base de código para las dos tiendas, sin renunciar a la experiencia nativa.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section reveal" id="metodo">
+                <div class="section-head">
+                    <span class="eyebrow">Método</span>
+                    <h2 class="section-title">Cómo trabajamos</h2>
+                </div>
+                <ol class="steps">
+                    <li class="step"><span class="step-n">01</span><h3>Diseño</h3><p>Definimos la idea, el flujo y la interfaz antes de escribir una línea de código.</p></li>
+                    <li class="step"><span class="step-n">02</span><h3>Desarrollo</h3><p>Flutter y Firebase para construir con rapidez sin sacrificar rendimiento.</p></li>
+                    <li class="step"><span class="step-n">03</span><h3>Publicación</h3><p>Lanzamos en Google Play y App Store, cuidando fichas, permisos y políticas.</p></li>
+                    <li class="step"><span class="step-n">04</span><h3>Soporte</h3><p>Seguimiento tras el lanzamiento y actualizaciones para mantener cada app al día.</p></li>
+                </ol>
+            </section>
+
+            <section class="section reveal" id="stack">
+                <div class="section-head">
+                    <span class="eyebrow">Stack tecnológico</span>
+                    <h2 class="section-title">Herramientas</h2>
+                </div>
+                <div class="tech-row">
+                    <div class="tech-item"><img src="assets/icons/flutter.svg" alt="" loading="lazy"><span>Flutter</span></div>
+                    <div class="tech-item"><img src="assets/icons/dart.png" alt="" loading="lazy"><span>Dart</span></div>
+                    <div class="tech-item"><img src="assets/icons/firebase.svg" alt="" loading="lazy"><span>Firebase</span></div>
+                    <div class="tech-item"><img src="assets/icons/github.svg" alt="" class="invert-dark" loading="lazy"><span>GitHub</span></div>
+                    <div class="tech-item"><img src="assets/icons/android.png" alt="" loading="lazy"><span>Android</span></div>
+                    <div class="tech-item"><img src="assets/icons/apple.webp" alt="" loading="lazy"><span>iOS</span></div>
+                </div>
+            </section>
+
+            <section class="section reveal" id="sobre">
+                <div class="about">
+                    <div>
+                        <span class="eyebrow">Sobre nosotros</span>
+                        <h2 class="section-title">Sobre Aevloop</h2>
+                    </div>
+                    <div class="about-text">
+                        <p>Aevloop es un estudio dedicado a diseñar, desarrollar y publicar aplicaciones móviles para iOS y Android.</p>
+                        <p>Cada aplicación tiene su propia identidad y su propio público. Lo que no cambia de una a otra es el cuidado por el rendimiento, el respeto a la privacidad y la atención a quien la usa.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section reveal" id="faq">
+                <div class="section-head">
+                    <span class="eyebrow">Ayuda</span>
+                    <h2 class="section-title">Preguntas Frecuentes</h2>
+                </div>
+                <div class="faq">
+                    <details>
+                        <summary>¿Mis datos están seguros en sus aplicaciones?</summary>
+                        <p>Sí. Diseñamos nuestras apps con la privacidad por defecto: solo recopilamos los datos técnicos mínimos (diagnósticos y estadísticas de uso anónimas) y cumplimos con el GDPR. El detalle está en nuestra <a href="/privacy">política de privacidad</a>.</p>
+                    </details>
+                    <details>
+                        <summary>¿En qué plataformas están disponibles las apps?</summary>
+                        <p>Nuestros desarrollos principales se centran en iOS (App Store) y Android (Google Play), utilizando tecnologías de alto rendimiento como Flutter para una experiencia nativa fluida.</p>
+                    </details>
+                    <details>
+                        <summary>¿Ofrecen soporte si encuentro un error?</summary>
+                        <p>Sí, monitorizamos activamente nuestras herramientas. Puedes reportar cualquier fallo a nuestro correo de soporte y trabajaremos en una actualización lo antes posible para solventarlo.</p>
+                    </details>
+                </div>
+            </section>
+
+            <section class="section reveal" id="contacto">
+                <div class="cta-box">
+                    <h2>¿Tienes una idea o un problema que resolver?</h2>
+                    <p>Escríbenos y te responderemos en menos de 24 horas.</p>
+                    <a class="btn btn-primary" href="mailto:development@vibescodestudios.com"><i data-icon="mail"></i>development@vibescodestudios.com</a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="appModal" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <button type="button" class="modal-close" aria-label="Cerrar"><i data-icon="x"></i></button>
+            <img src="" alt="" id="modalIcon" class="modal-icon" width="95" height="95">
+            <h2 id="modalTitle"></h2>
+            <p id="modalDesc" class="modal-desc"></p>
             <div class="modal-badges">
-                <a href="" id="modalAndroidLink" target="_blank" rel="noopener noreferrer" class="modal-badge-link">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play">
-                </a>
-                <a href="" id="modalIosLink" target="_blank" rel="noopener noreferrer" class="modal-badge-link">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store">
-                </a>
+                <a id="modalAndroid" target="_blank" rel="noopener noreferrer"><img src="assets/badges/google-play.svg" alt="Disponible en Google Play"></a>
+                <a id="modalIos" target="_blank" rel="noopener noreferrer"><img src="assets/badges/app-store.svg" alt="Descargar en App Store"></a>
             </div>
         </div>
     </div>
-    
+
     <footer>
-        <div class="container">
-            <p style="font-weight: 700;">&copy; 2026 Vibes Code Studios</p>
-            <div class="footer-links">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a href="#" class="brand"><img src="assets/logo/icono.png" alt="" width="30" height="30">Aevloop</a>
+                <p>Aplicaciones móviles para iOS y Android.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
                 <a href="/privacy">Privacidad</a>
                 <a href="/terms">Términos</a>
-                <a href="/delete-data">Eliminación de Datos</a>
-                <a href="mailto:development@vibescodestudios.com">Contacto</a>
+                <a href="/delete-data">Eliminación de datos</a>
+            </div>
+            <div class="footer-col">
+                <h4>Contacto</h4>
+                <a href="mailto:development@vibescodestudios.com">development@vibescodestudios.com</a>
             </div>
         </div>
+        <div class="container footer-bottom"><p class="name">&copy; 2026 Aevloop</p></div>
     </footer>
-
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        lucide.createIcons();
-
-        // Lógica para el acordeón de FAQ
-        document.querySelectorAll('.faq-question').forEach(question => {
-            question.addEventListener('click', () => {
-                const item = question.parentElement;
-                item.classList.toggle('active');
-            });
-        });
-
-        // JAVASCRIPT INTELIGENTE PARA LLENAR EL MODAL
-        function openAppModal(title, iconSrc, desc, androidUrl, iosUrl) {
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalIcon').src = iconSrc;
-            document.getElementById('modalDesc').innerText = desc;
-            document.getElementById('modalAndroidLink').href = androidUrl;
-            document.getElementById('modalIosLink').href = iosUrl;
-            
-            document.getElementById('appModal').classList.add('active');
-        }
-
-        function closeAppModal(event) {
-            document.getElementById('appModal').classList.remove('active');
-        }
-
-        function applyTheme(theme) {
-            document.body.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            
-            const iconContainer = document.getElementById('theme-icon-container');
-            if(iconContainer) {
-                iconContainer.setAttribute('data-lucide', theme === 'dark' ? 'moon' : 'sun');
-                lucide.createIcons();
+        // Añade aquí cada app nueva (y un botón .app-card con su data-app en la rejilla).
+        const APPS = {
+            'pueblo-duerme': {
+                title: 'Pueblo Duerme',
+                icon: 'assets/apps/wolvesville.png',
+                desc: 'El sol se pone y el pueblo cierra los ojos... ¿quién sobrevivirá a la noche? Pueblo Duerme - Narrador Pro es la aplicación esencial para dirigir tus partidas de roles ocultos. Olvídate de los errores y las confusiones: gestiona los jugadores, asigna roles en secreto y narra la historia con fluidez para que la intriga nunca decaiga.',
+                android: 'https://play.google.com/store/apps/details?id=com.narradorpro.pueblo_duerme',
+                ios: 'https://apps.apple.com/us/app/pueblo-duerme/id6760626709'
             }
-        }
-
-        function toggleTheme() {
-            const current = document.body.getAttribute('data-theme');
-            applyTheme(current === 'dark' ? 'light' : 'dark');
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const saved = localStorage.getItem('theme') || 'dark';
-            applyTheme(saved);
-            AOS.init({ duration: 1000, once: true });
+        };
+        document.addEventListener('DOMContentLoaded', function () {
+            var modal = document.getElementById('appModal'), last = null;
+            function close() { modal.classList.remove('active'); modal.setAttribute('aria-hidden', 'true'); if (last) last.focus(); }
+            document.querySelectorAll('.app-card').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var app = APPS[btn.dataset.app]; if (!app) return;
+                    last = btn;
+                    document.getElementById('modalTitle').textContent = app.title;
+                    document.getElementById('modalIcon').src = app.icon;
+                    document.getElementById('modalDesc').textContent = app.desc;
+                    document.getElementById('modalAndroid').href = app.android;
+                    document.getElementById('modalIos').href = app.ios;
+                    modal.classList.add('active'); modal.setAttribute('aria-hidden', 'false');
+                    modal.querySelector('.modal-close').focus();
+                });
+            });
+            modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+            modal.querySelector('.modal-close').addEventListener('click', close);
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modal.classList.contains('active')) close(); });
         });
     </script>
 </body>

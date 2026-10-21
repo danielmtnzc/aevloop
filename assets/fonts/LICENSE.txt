@@ -1,0 +1,4 @@
+Geist y Geist Mono
+Copyright (c) Vercel, en colaboración con Basement Studio.
+Licencia: SIL Open Font License, Version 1.1 (https://openfontlicense.org)
+Fuente de los archivos: Google Fonts (https://fonts.google.com/specimen/Geist).
