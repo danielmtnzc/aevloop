@@ -297,9 +297,10 @@
                 while (i < stations.length - 1 && yc >= stations[i + 1].y) i++;
                 A = stations[i]; B = stations[Math.min(i + 1, stations.length - 1)];
                 if (A !== B) m = smooth(0.25, 0.75, (yc - A.y) / (B.y - A.y));
+                if (reduce) m = m < 0.5 ? 0 : 1;                                   // sin animación: cambia de figura de golpe, sin viajar
                 if (m > 0.999) { A = B; m = 0; }
             } else {
-                spread = clamp(scrollY / (A.h * 0.85), 0, 1); // pantallas estrechas: el teléfono se deshace
+                spread = reduce ? 0 : clamp(scrollY / (A.h * 0.85), 0, 1); // pantallas estrechas: el teléfono se deshace (sin animación: solo se desplaza)
                 if (spread >= 1) return;
             }
             var S = A.s + (B.s - A.s) * m, cx = A.x + (B.x - A.x) * m, cy = A.y + (B.y - A.y) * m - scrollY;
