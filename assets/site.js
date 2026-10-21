@@ -1,16 +1,8 @@
-// Lógica compartida: tema claro/oscuro, iconos, animaciones de entrada, luz en tarjetas,
-// índice de las páginas legales y fondo de globo.
-// El tema inicial se aplica con un script inline en <head> para evitar parpadeos.
+// Lógica compartida: iconos, animaciones de entrada, índice de las páginas legales
+// y fondo de constelación de partículas. La web es solo de tema oscuro.
 (function () {
-    function setTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        try { localStorage.setItem('theme', theme); } catch (e) {}
-    }
-
     // ---------- Iconos propios (trazos tipo Lucide, sin dependencias externas) ----------
     var ICONS = {
-        moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
-        sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
         x: '<path d="M18 6 6 18M6 6l12 12"/>',
         smartphone: '<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>',
         'life-buoy': '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="m4.93 4.93 4.24 4.24M14.83 9.17l4.24-4.24M14.83 14.83l4.24 4.24M9.17 14.83l-4.24 4.24"/>',
@@ -30,17 +22,6 @@
             svg.innerHTML = ICONS[el.getAttribute('data-icon')] || '';
             el.replaceWith(svg);
         });
-    }
-
-    // ---------- Luz que sigue al cursor en tarjetas (.spot) ----------
-    function initSpotlight() {
-        document.addEventListener('pointermove', function (e) {
-            var el = e.target.closest && e.target.closest('.spot');
-            if (!el) return;
-            var r = el.getBoundingClientRect();
-            el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-            el.style.setProperty('--my', (e.clientY - r.top) + 'px');
-        }, { passive: true });
     }
 
     // ---------- Índice lateral en páginas legales ----------
@@ -71,201 +52,139 @@
         heads.forEach(function (h) { io.observe(h); });
     }
 
-    // ---------- Fondo: globo de malla (canvas) ----------
-    function initGlobe() {
+    // ---------- Fondo: constelación de triángulos (canvas) ----------
+    // Una nube orgánica de pequeños triángulos de colores que gira despacio junto al titular
+    // (solo en páginas con .hero), y partículas sueltas que flotan por toda la página.
+    function initConstellation() {
         var canvas = document.createElement('canvas');
-        canvas.id = 'bg-globe';
+        canvas.id = 'bg-constellation';
         canvas.setAttribute('aria-hidden', 'true');
         document.body.insertBefore(canvas, document.body.firstChild);
         var ctx = canvas.getContext('2d');
         if (!ctx) return;
 
         var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        var off = document.createElement('canvas'), octx = off.getContext('2d');
-        var W = 0, H = 0, dpr = 1, R = 0, scrollY = window.scrollY || 0;
-        var heroEnd = 0, mx = 0, my = 0, tx = 0, ty = 0, lineRgb = '255,255,255', glowRgb = '129,140,248';
-        var small = Math.min(window.innerWidth, window.innerHeight) < 700 || (navigator.hardwareConcurrency || 8) <= 4; // menos malla y 30 fps
-        var LAT_STEP = small ? 15 : 10, LON_STEP = small ? 15 : 10, lastFrame = 0, TILT = -0.16; // se ve desde ligeramente por debajo del polo
-        var D = Math.PI / 180;
-        // Arcos de luz entre puntos de la esfera: [lat, lon] → [lat, lon]
-        var ARCS = [[[38, -45], [18, 55]], [[12, 105], [48, 165]], [[-10, -105], [28, -15]], [[52, 20], [8, 80]]];
+        var small = Math.min(window.innerWidth, window.innerHeight) < 700 || (navigator.hardwareConcurrency || 8) <= 4;
+        var hero = document.querySelector('.hero'), visual = document.querySelector('.hero-visual');
+        var W = 0, H = 0, dpr = 1, scrollY = window.scrollY || 0, lastFrame = 0;
+        var cloud = { x: 0, y: 0, r: 0 }, mx = 0, my = 0, tx = 0, ty = 0;
 
-        function readColors() {
-            var cs = getComputedStyle(document.documentElement);
-            lineRgb = cs.getPropertyValue('--globe-rgb').trim() || lineRgb;
-            glowRgb = cs.getPropertyValue('--globe-glow-rgb').trim() || glowRgb;
+        // Paleta: violeta dominante, con ámbar, verde azulado, magenta y azul como chispas
+        var COLORS = ['128,82,255', '128,82,255', '128,82,255', '180,156,255', '255,184,41', '43,196,164', '224,75,214', '79,123,255'];
+        function rand(a, b) { return a + Math.random() * (b - a); }
+        function pick() { return COLORS[(Math.random() * COLORS.length) | 0]; }
+
+        // Puntos repartidos sobre una esfera (Fibonacci) y deformados para que la forma sea orgánica
+        var N = small ? 700 : 1500, pts = [], i;
+        var GA = Math.PI * (3 - Math.sqrt(5));
+        for (i = 0; i < N; i++) {
+            var y = 1 - (i / (N - 1)) * 2, rr = Math.sqrt(1 - y * y), th = GA * i;
+            var x = Math.cos(th) * rr, z = Math.sin(th) * rr;
+            var bump = 1 + 0.2 * Math.sin(2.6 * x + 1) * Math.cos(3 * y) + 0.1 * Math.sin(4 * z + 2 * x)
+                - (y > 0 ? 0.16 * y * Math.exp(-x * x * 26) : 0); // pliegue central: forma de dos lóbulos
+            var q = Math.random(), depth = q < 0.1 ? rand(1.08, 1.5) : 1 - Math.pow(Math.random(), 2) * 0.55; // halo exterior y relleno interior
+            pts.push({ x: x * bump * depth * 1.08, y: y * bump * depth * 0.9, z: z * bump * depth,
+                c: pick(), s: rand(1.8, 3.8), a: rand(0, 6.28), spin: rand(-1, 1) * 0.0006, tw: rand(0, 6.28) });
+        }
+        // Partículas sueltas por toda la pantalla
+        var DUST = small ? 26 : 60, dust = [];
+        for (i = 0; i < DUST; i++) {
+            dust.push({ x: Math.random(), y: Math.random(), vx: rand(-1, 1) * 0.000006, vy: rand(-1, 1) * 0.000006,
+                c: pick(), s: rand(1.6, 3.4), a: rand(0, 6.28), spin: rand(-1, 1) * 0.0004, o: rand(0.12, 0.34) });
+        }
+
+        function tri(x, y, s, ang) {
+            ctx.moveTo(x + Math.cos(ang) * s, y + Math.sin(ang) * s);
+            ctx.lineTo(x + Math.cos(ang + 2.094) * s, y + Math.sin(ang + 2.094) * s);
+            ctx.lineTo(x + Math.cos(ang + 4.189) * s, y + Math.sin(ang + 4.189) * s);
+            ctx.closePath();
+        }
+
+        function measure() {
+            var sy = window.scrollY || 0;
+            if (!hero) { cloud.r = 0; return; }
+            var vr = visual && visual.getBoundingClientRect();
+            if (vr && vr.width > 40) { // escritorio: a la derecha del titular
+                cloud.x = vr.left + vr.width / 2;
+                cloud.y = vr.top + sy + vr.height / 2;
+                cloud.r = Math.min(vr.width * 0.5, vr.height * 0.48, 340);
+            } else { // móvil: debajo del texto
+                var hr = hero.getBoundingClientRect();
+                var pad = parseFloat(getComputedStyle(hero).paddingBottom) || 300;
+                cloud.r = Math.min(W * 0.3, pad * 0.36);
+                cloud.x = W / 2;
+                cloud.y = hr.bottom + sy - pad / 2;
+            }
         }
 
         function resize() {
             dpr = Math.min(window.devicePixelRatio || 1, 2);
             W = window.innerWidth; H = window.innerHeight;
-            [canvas, off].forEach(function (c) { c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); });
+            canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
             canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
-            R = Math.min(Math.max(W * 0.9, 420), 1300);
-            var act = document.querySelector('.hero-trust') || document.querySelector('.hero-actions');
-            heroEnd = act ? act.getBoundingClientRect().bottom + (window.scrollY || 0) + 24 : 0;
+            measure();
             draw(performance.now());
         }
 
-        // Proyecta un punto (lat, lon) a pantalla; k sube el punto sobre la superficie. null si queda detrás.
-        function project(lat, lon, rot, tilt, cx, cy, k) {
-            k = k || 1;
-            var cl = Math.cos(lat), x = cl * Math.sin(lon + rot), y = Math.sin(lat), z = cl * Math.cos(lon + rot);
-            var y2 = y * Math.cos(tilt) - z * Math.sin(tilt), z2 = y * Math.sin(tilt) + z * Math.cos(tilt);
-            if (z2 < 0) return null;
-            return [cx + x * R * k, cy - y2 * R * k];
-        }
-
-        function strokeLine(c, pts) {
-            var open = false;
-            c.beginPath();
-            pts.forEach(function (p) {
-                if (!p) { open = false; return; }
-                if (!open) { c.moveTo(p[0], p[1]); open = true; } else { c.lineTo(p[0], p[1]); }
-            });
-            c.stroke();
-        }
-
-        // Punto del círculo máximo entre a y b (vectores unitarios) en t∈[0,1], devuelto como [lat, lon]
-        function slerp(a, b, om, t) {
-            var s = Math.sin(om), f1 = Math.sin((1 - t) * om) / s, f2 = Math.sin(t * om) / s;
-            var x = f1 * a[0] + f2 * b[0], y = f1 * a[1] + f2 * b[1], z = f1 * a[2] + f2 * b[2];
-            return [Math.asin(Math.max(-1, Math.min(1, y))), Math.atan2(x, z)];
-        }
-        function vec(latDeg, lonDeg) {
-            var la = latDeg * D, lo = lonDeg * D;
-            return [Math.cos(la) * Math.sin(lo), Math.sin(la), Math.cos(la) * Math.cos(lo)];
-        }
-
         function draw(now) {
-            if (!W || !H || !off.width || !off.height) return;
-            var top = Math.max(H * 0.66, heroEnd) - scrollY * 0.25, cx = W / 2, cy = top + R;
-            var rot = reduce ? 0.4 : now * 0.00004 + tx * 0.25, tilt = TILT + ty * 0.06;
-
+            if (!W || !H) return;
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             ctx.clearRect(0, 0, W, H);
-            // Resplandor suave sobre el vértice del globo
-            var g = ctx.createRadialGradient(cx, top, 0, cx, top, Math.max(W, R) * 0.7);
-            g.addColorStop(0, 'rgba(' + glowRgb + ',0.20)');
-            g.addColorStop(1, 'rgba(' + glowRgb + ',0)');
-            ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+            ctx.lineWidth = 1; ctx.lineJoin = 'round';
+            var t = reduce ? 0 : now;
 
-            // Malla en un canvas aparte para poder desvanecerla hacia abajo y hacia los lados
-            octx.setTransform(dpr, 0, 0, dpr, 0, 0);
-            octx.clearRect(0, 0, W, H);
-            octx.lineWidth = 1;
-            var i, j, pts, lat, lon;
-            octx.strokeStyle = 'rgba(' + lineRgb + ',0.5)';
-            for (i = 0; i < 360; i += LON_STEP) { // meridianos
-                pts = [];
-                for (j = -90; j <= 90; j += 3) pts.push(project(j * D, i * D, rot, tilt, cx, cy));
-                strokeLine(octx, pts);
-            }
-            octx.strokeStyle = 'rgba(' + lineRgb + ',0.38)';
-            for (lat = -80; lat <= 80; lat += LAT_STEP) { // paralelos
-                pts = [];
-                for (lon = 0; lon <= 360; lon += 4) pts.push(project(lat * D, lon * D, rot, tilt, cx, cy));
-                strokeLine(octx, pts);
-            }
-            // Máscara: más intensa arriba y al centro
-            octx.globalCompositeOperation = 'destination-in';
-            var m = octx.createLinearGradient(0, top - 20, 0, top + H * 0.6);
-            m.addColorStop(0, 'rgba(0,0,0,0.9)'); m.addColorStop(1, 'rgba(0,0,0,0.08)');
-            octx.fillStyle = m; octx.fillRect(0, 0, W, H);
-            var s = octx.createRadialGradient(cx, top, 0, cx, top, Math.max(W * 0.75, 500));
-            s.addColorStop(0, 'rgba(0,0,0,1)'); s.addColorStop(1, 'rgba(0,0,0,0.25)');
-            octx.fillStyle = s; octx.fillRect(0, 0, W, H);
-            octx.globalCompositeOperation = 'source-over';
-            ctx.drawImage(off, 0, 0, W, H);
-
-            function fade(y) { return Math.max(0.12, Math.min(1, 1 - (y - top) / (H * 0.6))); }
-
-            // Nodos luminosos en algunos cruces de la malla
-            var idx = 0, p, a;
-            for (lat = -60; lat <= 60; lat += 30) {
-                for (lon = 0; lon < 360; lon += 30) {
-                    idx++;
-                    if ((idx * 7919) % 10 > 2) continue;
-                    p = project(lat * D, lon * D, rot, tilt, cx, cy);
-                    if (!p) continue;
-                    a = fade(p[1]) * (reduce ? 0.8 : 0.55 + 0.45 * Math.sin(now * 0.002 + idx));
-                    ctx.fillStyle = 'rgba(' + glowRgb + ',' + (a * 0.18) + ')';
-                    ctx.beginPath(); ctx.arc(p[0], p[1], 6, 0, 6.2832); ctx.fill();
-                    ctx.fillStyle = 'rgba(' + glowRgb + ',' + a + ')';
-                    ctx.beginPath(); ctx.arc(p[0], p[1], 1.8, 0, 6.2832); ctx.fill();
-                }
-            }
-
-            // Arcos de luz sobre la superficie, con un destello que los recorre
-            ctx.lineWidth = 1.2; ctx.lineCap = 'round';
-            ARCS.forEach(function (arc, n) {
-                var A = vec(arc[0][0], arc[0][1]), B = vec(arc[1][0], arc[1][1]);
-                var om = Math.acos(Math.max(-1, Math.min(1, A[0] * B[0] + A[1] * B[1] + A[2] * B[2])));
-                function at(t) {
-                    var ll = slerp(A, B, om, t);
-                    return project(ll[0], ll[1], rot, tilt, cx, cy, 1 + 0.2 * Math.sin(Math.PI * t));
-                }
-                var prev = null, t, q;
-                for (t = 0; t <= 1.001; t += 0.04) { // trazo tenue
-                    q = at(t);
-                    if (q && prev) {
-                        ctx.strokeStyle = 'rgba(' + glowRgb + ',' + (0.22 * fade(q[1])) + ')';
-                        ctx.beginPath(); ctx.moveTo(prev[0], prev[1]); ctx.lineTo(q[0], q[1]); ctx.stroke();
-                    }
-                    prev = q;
-                }
-                if (reduce) return;
-                var head = ((now * 0.00012 + n * 0.37) % 1.5) - 0.2, tail = 0.22, k;
-                prev = null;
-                for (k = 0; k <= 10; k++) { // cola brillante
-                    t = head - tail + (tail * k) / 10;
-                    if (t < 0 || t > 1) { prev = null; continue; }
-                    q = at(t);
-                    if (q && prev) {
-                        ctx.strokeStyle = 'rgba(' + glowRgb + ',' + (0.9 * (k / 10) * fade(q[1])) + ')';
-                        ctx.beginPath(); ctx.moveTo(prev[0], prev[1]); ctx.lineTo(q[0], q[1]); ctx.stroke();
-                    }
-                    prev = q;
-                }
+            // Partículas sueltas
+            dust.forEach(function (d) {
+                var x = ((d.x + d.vx * t) % 1 + 1) % 1 * W, y = ((d.y + d.vy * t) % 1 + 1) % 1 * H;
+                ctx.strokeStyle = 'rgba(' + d.c + ',' + d.o + ')';
+                ctx.beginPath(); tri(x, y, d.s, d.a + d.spin * t); ctx.stroke();
             });
+
+            // Nube principal
+            if (!cloud.r) return;
+            var cy = cloud.y - scrollY;
+            if (cy + cloud.r * 1.5 < 0 || cy - cloud.r * 1.5 > H) return;
+            var rot = t * 0.00008 + tx * 0.5, tilt = 0.32 + ty * 0.25;
+            var cr = Math.cos(rot), sr = Math.sin(rot), ct = Math.cos(tilt), st = Math.sin(tilt);
+            var R = cloud.r, F = 3.2; // F: distancia de cámara para una perspectiva suave
+            for (var k = 0; k < pts.length; k++) {
+                var p = pts[k];
+                var x1 = p.x * cr + p.z * sr, z1 = -p.x * sr + p.z * cr;
+                var y1 = p.y * ct - z1 * st, z2 = p.y * st + z1 * ct;
+                var persp = F / (F - z2);
+                var px = cloud.x + x1 * R * persp, py = cy + y1 * R * persp;
+                var front = (z2 + 1.15) / 2.3; // 0 detrás, 1 delante
+                var alpha = 0.18 + 0.82 * front * front;
+                if (!reduce) alpha *= 0.8 + 0.2 * Math.sin(t * 0.0015 + p.tw);
+                ctx.strokeStyle = 'rgba(' + p.c + ',' + alpha.toFixed(3) + ')';
+                ctx.beginPath(); tri(px, py, p.s * (0.7 + 0.5 * front) * persp, p.a + p.spin * t); ctx.stroke();
+            }
         }
 
-        var running = false;
         function loop(now) {
-            if (small && now - lastFrame < 33) { requestAnimationFrame(loop); return; }
+            requestAnimationFrame(loop);
+            if (document.hidden) return;
+            if (small && now - lastFrame < 33) return;
             lastFrame = now;
             tx += (mx - tx) * 0.04; ty += (my - ty) * 0.04;
             draw(now);
-            requestAnimationFrame(loop);
         }
 
-        readColors();
         resize();
         window.addEventListener('resize', resize);
         window.addEventListener('load', resize);
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(resize);
         window.addEventListener('scroll', function () { scrollY = window.scrollY; if (reduce) draw(0); }, { passive: true });
-        new MutationObserver(function () { readColors(); draw(performance.now()); })
-            .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
         if (!reduce) {
-            window.addEventListener('mousemove', function (e) {
-                mx = e.clientX / W - 0.5; my = e.clientY / H - 0.5;
-            }, { passive: true });
-            if (!running) { running = true; requestAnimationFrame(loop); }
+            window.addEventListener('mousemove', function (e) { mx = e.clientX / W - 0.5; my = e.clientY / H - 0.5; }, { passive: true });
+            requestAnimationFrame(loop);
         }
     }
 
     document.addEventListener('DOMContentLoaded', function () {
         renderIcons();
-        initGlobe();
-        initSpotlight();
+        initConstellation();
         initToc();
-
-        document.querySelectorAll('.theme-toggle').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                var current = document.documentElement.getAttribute('data-theme');
-                setTheme(current === 'light' ? 'dark' : 'light');
-            });
-        });
 
         var items = document.querySelectorAll('.reveal');
         if (!('IntersectionObserver' in window)) {
