@@ -164,22 +164,62 @@
                         <p>Sí. Diseñamos nuestras apps con la privacidad por defecto: solo recopilamos los datos técnicos mínimos (diagnósticos y estadísticas de uso anónimas) y cumplimos con el GDPR. El detalle está en nuestra <a href="/privacy">política de privacidad</a>.</p>
                     </details>
                     <details>
+                        <summary>¿Necesito crear una cuenta para usar las apps?</summary>
+                        <p>No. Ahora mismo ninguna de nuestras apps pide crear una cuenta: las descargas y las usas directamente. En las apps que publiquemos más adelante podrá haber la opción de crear una cuenta; si es así, te explicaremos qué datos se guardan y podrás pedir que se eliminen cuando quieras.</p>
+                    </details>
+                    <details>
+                        <summary>¿Las apps son gratuitas?</summary>
+                        <p>Sí, todas nuestras apps se descargan y se usan gratis. Se financian con anuncios, que se muestran a través de Google AdMob.</p>
+                    </details>
+                    <details>
                         <summary>¿En qué plataformas están disponibles las apps?</summary>
                         <p>Nuestros desarrollos principales se centran en iOS (App Store) y Android (Google Play), utilizando tecnologías de alto rendimiento como Flutter para una experiencia nativa fluida.</p>
                     </details>
                     <details>
                         <summary>¿Ofrecen soporte si encuentro un error?</summary>
-                        <p>Sí, monitorizamos activamente nuestras herramientas. Puedes reportar cualquier fallo a nuestro correo de soporte y trabajaremos en una actualización lo antes posible para solventarlo.</p>
+                        <p>Sí, monitorizamos activamente nuestras apps. Cuéntanos el fallo desde el <a href="#contacto">formulario de sugerencias y problemas</a> o escribiendo a nuestro correo, y trabajaremos en una actualización lo antes posible para solventarlo.</p>
+                    </details>
+                    <details>
+                        <summary>¿Cómo puedo pedir que se borren mis datos?</summary>
+                        <p>Escríbenos a <a href="mailto:development@vibescodestudios.com">development@vibescodestudios.com</a> con el asunto «Solicitud de eliminación de datos» y el nombre de la app. Eliminaremos cualquier dato asociado en un plazo máximo de 7 días hábiles y te lo confirmaremos por correo. Tienes todos los pasos en la página de <a href="/delete-data">eliminación de datos</a>.</p>
                     </details>
                 </div>
             </section>
 
             <section class="section reveal" id="contacto">
                 <div class="cta-box">
-                    <span class="eyebrow">Contacto</span>
-                    <h2>¿Tienes una idea o un problema que resolver?</h2>
-                    <p>Escríbenos y te responderemos en menos de 24 horas.</p>
-                    <a class="btn btn-primary" href="mailto:development@vibescodestudios.com"><i data-icon="mail"></i>development@vibescodestudios.com</a>
+                    <span class="eyebrow">Sugerencias y problemas</span>
+                    <h2>Ayúdanos a mejorar nuestras apps</h2>
+                    <p>¿Se te ocurre una mejora o algo no funciona como debería? Cuéntanoslo: leemos todos los mensajes y te responderemos en menos de 24 horas.</p>
+                    <form class="feedback-form" id="feedbackForm">
+                        <fieldset class="fb-type">
+                            <legend>¿Qué quieres contarnos?</legend>
+                            <label><input type="radio" name="tipo" value="Sugerencia de mejora" checked><span>Sugerencia de mejora</span></label>
+                            <label><input type="radio" name="tipo" value="Problema o error"><span>Problema o error</span></label>
+                            <label><input type="radio" name="tipo" value="Otra consulta"><span>Otra consulta</span></label>
+                        </fieldset>
+                        <div class="fb-row">
+                            <label class="fb-field">
+                                <span>App</span>
+                                <select name="app">
+                                    <option>Pueblo Duerme</option>
+                                    <option value="General">General / otra</option>
+                                </select>
+                            </label>
+                            <label class="fb-field">
+                                <span>Dispositivo <em>(opcional)</em></span>
+                                <input type="text" name="dispositivo" placeholder="Ej.: iPhone 13 con iOS 18" autocomplete="off">
+                            </label>
+                        </div>
+                        <label class="fb-field">
+                            <span>Mensaje</span>
+                            <textarea name="mensaje" rows="5" required placeholder="Describe tu idea o el problema con el mayor detalle posible."></textarea>
+                        </label>
+                        <div class="fb-actions">
+                            <button type="submit" class="btn btn-primary"><i data-icon="mail"></i>Preparar correo</button>
+                            <p class="fb-note">Se abrirá tu app de correo con el mensaje listo para enviar. También puedes escribirnos a <a href="mailto:development@vibescodestudios.com">development@vibescodestudios.com</a>.</p>
+                        </div>
+                    </form>
                 </div>
             </section>
         </div>

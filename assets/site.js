@@ -412,7 +412,7 @@
         // Entradas: títulos palabra a palabra y elementos escalonados
         if (!REDUCE) {
             document.querySelectorAll('.section-title, .cta-box h2').forEach(function (h) { h.classList.add('split'); splitWords(h, 'w'); });
-            ['.apps-grid > *', '.bento > *', '.steps > li', '.tech-row > *', '.faq > details', '.about-text > p', '.cta-box > p, .cta-box > .btn'].forEach(function (sel) {
+            ['.apps-grid > *', '.bento > *', '.steps > li', '.tech-row > *', '.faq > details', '.about-text > p', '.cta-box > p, .feedback-form > *'].forEach(function (sel) {
                 document.querySelectorAll(sel).forEach(function (el, i) { el.classList.add('stg'); el.style.setProperty('--i', i); });
             });
         }
@@ -481,10 +481,28 @@
         });
     }
 
+
+    // ---------- Formulario de sugerencias y problemas ----------
+    // La web es estática: el formulario prepara un correo con los datos y abre la app de correo del usuario.
+    function initFeedback() {
+        var form = document.getElementById('feedbackForm');
+        if (!form) return;
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var f = form.elements, msg = f.mensaje.value.trim();
+            if (!msg) { f.mensaje.focus(); return; }
+            var tipo = form.querySelector('input[name="tipo"]:checked').value, app = f.app.value, disp = f.dispositivo.value.trim();
+            var subject = '[' + app + '] ' + tipo;
+            var body = 'Tipo: ' + tipo + '\nApp: ' + app + (disp ? '\nDispositivo: ' + disp : '') + '\n\n' + msg + '\n';
+            window.location.href = 'mailto:development@vibescodestudios.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         renderIcons();
         initParticles();
         initToc();
         initScrollFx();
+        initFeedback();
     });
 })();
